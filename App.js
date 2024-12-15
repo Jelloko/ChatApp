@@ -1,6 +1,7 @@
 // import the screens
 import Start from './components/Start';
 import Chat from './components/Chat';
+import CustomActions from './CustomActions';
 
 // import react Navigation
 import { NavigationContainer } from '@react-navigation/native';
@@ -9,6 +10,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import Firebase modules
 import { initializeApp } from "firebase/app";
 import { getFirestore, enableNetwork, disableNetwork } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // import NetInfo
 import NetInfo from '@react-native-community/netinfo';
@@ -30,6 +32,7 @@ const App = () => {
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
+  const storage = getStorage(app);
 
   // Initialize Cloud Firestore and get a reference to the service
   const db = getFirestore(app);
@@ -60,7 +63,7 @@ const App = () => {
       <Stack.Navigator initialRouteName="Start">
         <Stack.Screen name="Start" component={Start} />
         <Stack.Screen name="Chat">
-          {props => <Chat db={db} isConnected={isConnected} {...props} />}
+          {props => <Chat db={db} storage={storage} isConnected={isConnected} {...props} />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
