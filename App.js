@@ -1,7 +1,6 @@
 // import the screens
 import Start from './components/Start';
 import Chat from './components/Chat';
-import CustomActions from './CustomActions';
 
 // import react Navigation
 import { NavigationContainer } from '@react-navigation/native';
