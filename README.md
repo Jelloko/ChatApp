@@ -72,6 +72,7 @@ Copy your Firebase configuration credentials.
 
 Open the App.js file in the project and replace the firebaseConfig object with your credentials:
 const firebaseConfig = {
+  
   apiKey: "YOUR_API_KEY"
 
   authDomain: "YOUR_AUTH_DOMAIN"
