@@ -4,15 +4,28 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage }) => {
+const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID }) => {
   const actionSheet = useActionSheet();
 
-  const uploadToFirebase = async (uri) => {
-    const blob = await fetch(uri).then((res) => res.blob());
-    const filename = uri.substring(uri.lastIndexOf('/') + 1);
-    const storageRef = ref(storage, `images/${filename}`);
-    await uploadBytes(storageRef, blob);
-    return await getDownloadURL(storageRef);
+  const generateReference = (uri) => {
+    const timeStamp = (new Date()).getTime();
+    const imageName = uri.split("/")[uri.split("/").length - 1];
+    return `${userID}-${timeStamp}-${imageName}`;
+  }
+
+  const uploadToFirebase = async (imageURI) => {
+    const uniqueRefString = generateReference(imageURI);
+    const newUploadRef = ref(storage, uniqueRefString);
+    const response = await fetch(imageURI);
+    const blob = await response.blob();
+    uploadBytes(newUploadRef, blob).then(async (snapshot) => {
+      const imageURL = await getDownloadURL(snapshot.ref)
+      onSend([{ 
+        image: imageURL,
+        user: { _id: userID, name: "User Name" }, 
+        createdAt: new Date(),
+      }]);
+    });
   };
 
   const pickImage = async () => {
@@ -23,8 +36,7 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage }) => {
     }
     const result = await ImagePicker.launchImageLibraryAsync();
     if (!result.canceled) {
-      const imageUrl = await uploadToFirebase(result.uri);
-      onSend([{ image: imageUrl }]);
+      await uploadToFirebase(result.assets[0].uri);
     }
   };
 
@@ -36,8 +48,7 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage }) => {
     }
     const result = await ImagePicker.launchCameraAsync();
     if (!result.canceled) {
-      const imageUrl = await uploadToFirebase(result.uri);
-      onSend([{ image: imageUrl }]);
+      await uploadToFirebase(result.assets[0].uri);
     }
   };
 
