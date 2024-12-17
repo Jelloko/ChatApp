@@ -6,7 +6,7 @@ import { collection, query, orderBy, onSnapshot, addDoc } from "firebase/firesto
 import CustomActions from './CustomActions';
 import MapView, { Marker } from "react-native-maps";
 
-const Chat = ({ route, navigation, db, isConnected }) => {
+const Chat = ({ route, navigation, db, storage, isConnected }) => {
   const [messages, setMessages] = useState([]);
   const { name, bgColor, userID } = route.params;
 
@@ -34,7 +34,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
   };
 
   const renderCustomActions = (props) => {
-    return <CustomActions storage={storage} {...props} />;
+    return <CustomActions  onSend={onSend} storage={storage} userID={userID} {...props} />;
   };
 
   const renderCustomView = (props) => {
@@ -110,6 +110,8 @@ const Chat = ({ route, navigation, db, isConnected }) => {
             text: data.text,
             createdAt: data.createdAt.toDate(),
             user: data.user,
+            image: data.image, // Ensure `image` is included
+            location: data.location, // Ensure `location` is included
           };
         });
 
@@ -132,6 +134,10 @@ const Chat = ({ route, navigation, db, isConnected }) => {
       addDoc(collection(db, "messages"), {
         ...newMessages[0],
         createdAt: new Date(),
+        user: { // Add user information here
+          _id: userID,
+          name: name,
+        },
       }).catch((error) => console.error("Error sending message:", error));
     } else {
       Alert.alert("You are offline");
@@ -153,6 +159,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
         }}
       />
       {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
+      { Platform.OS === "ios"?<KeyboardAvoidingView behavior="padding" />: null }
     </View>
   );
 };
