@@ -50,13 +50,13 @@ AsyncStorage: Local storage for offline functionality.
 
 ***Setup Instructions***
 
-Step 1: Clone the Repository
+**Step 1: Clone the Repository**
 
 Open your terminal and run the following commands:
 $ git clone https://github.com/your-username/chatapp.git
 $ cd chatapp
 
-Step 2: Install Dependencies
+**Step 2: Install Dependencies**
 
 Make sure you have Node.js v18.20.4 installed. You can download it from Node.js. Then, run the following command to install project dependencies:
 $ npm install
@@ -64,7 +64,7 @@ $ npm install
 Next, install the Expo CLI globally if you don’t already have it:
 $ npm install -g expo-cli
 
-Step 3: Configure Firebase
+**Step 3: Configure Firebase**
 
 Go to Firebase Console, create a new project, and add a web app.
 
@@ -80,7 +80,7 @@ const firebaseConfig = {
   appId: "YOUR_APP_ID"
 };
 
-Step 4: Run the App Locally
+**Step 4: Run the App Locally**
 
 Start the Expo development server:
 $ npm start
